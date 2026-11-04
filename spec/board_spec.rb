@@ -14,7 +14,7 @@ describe Board do
   end
 
   describe "#setup" do
-    it "places the  black rook at [0, 0]" do
+    it "places the black rook at [0, 0]" do
       board = Board.new
       piece = board.piece_at([0, 0])
 
@@ -28,6 +28,38 @@ describe Board do
       board.grid[6].each do |cell|
         expect(cell).to be_a(Pawn)
         expect(cell.color).to eq(:white)
+      end
+    end
+  end
+
+  describe "full board setup" do
+    let(:board) { Board.new }
+
+    it "places black pieces in the correct back row order (row 0)" do
+      expected_pieces = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
+
+      expected_pieces.each_with_index do |piece_class, col|
+        piece = board.piece_at([0, col])
+        expect(piece).to be_a(piece_class)
+        expect(piece.color).to eq(:black)
+      end
+    end
+
+    it "places white pieces in the correct back row order (row 7)" do
+      expected_pieces = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
+
+      expected_pieces.each_with_index do |piece_class, col|
+        piece = board.piece_at([7, col])
+        expect(piece).to be_a(piece_class)
+        expect(piece.color).to eq(:white)
+      end
+    end
+
+    it "leaves the middle rows (2 to 5) empty" do
+      (2..5).each do |row|
+        (0..7).each do |col|
+          expect(board.piece_at([row, col])).to eq(' ')
+        end
       end
     end
   end

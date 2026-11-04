@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Piece 
+class Piece
   attr_reader :color
 
   def initialize(color)

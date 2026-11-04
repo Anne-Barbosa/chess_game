@@ -37,4 +37,24 @@ class Board
     col = coords[1]
     @grid[row][col]
   end
+
+  def display
+    puts "\n    a   b   c   d   e   f   g   h"
+    puts "  +---+---+---+---+---+---+---+---+"
+
+    @grid.each_with_index do |row, index|
+      row_number = 8 - index
+      print "#{row_number} |"
+
+      row.each do |cell|
+        symbol = cell.is_a?(Piece) ? cell.symbol : ' '
+        print " #{symbol} |"
+      end
+
+      puts " #{row_number}"
+      puts "  +---+---+---+---+---+---+---+---+"
+    end
+
+    puts "    a   b   c   d   e   f   g   h\n\n"
+  end
 end

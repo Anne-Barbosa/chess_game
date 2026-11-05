@@ -38,6 +38,20 @@ class Board
     @grid[row][col]
   end
 
+  def algebraic_to_coords(notation)
+    return nil unless notation.is_a?(String) && notation.length == 2
+
+    col_char = notation[0].downcase
+    row_char = notation[1]
+
+    return nil unless ('a'..'h').include?(col_char) && ('1'..'8').include?(row_char)
+
+    col = col_char.ord - 'a'.ord
+    row = 8 - row_char.to_i
+
+    [row, col]
+  end
+
   def display
     puts "\n    a   b   c   d   e   f   g   h"
     puts "  +---+---+---+---+---+---+---+---+"

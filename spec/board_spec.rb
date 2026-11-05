@@ -63,4 +63,35 @@ describe Board do
       end
     end
   end
+
+  describe "#algebraic_to_coords" do
+    it "converts 'a8' notation to matrix indices [0, 0]" do
+      board = Board.new
+  
+      expect(board.algebraic_to_coords("a8")).to eq([0, 0])
+    end
+
+    it "converts 'e2' notation to matrix indices [6, 4]" do
+      board = Board.new
+
+      expect(board.algebraic_to_coords("e2")).to eq([6, 4])
+    end
+  end
+
+  describe "#algebraic_to_coords edge cases" do
+    let(:board) { Board.new }
+
+    it "returns nil for strings with invalid format or length" do
+      expect(board.algebraic_to_coords("invalid")).to be_nil
+      expect(board.algebraic_to_coords("a")).to be_nil
+      expect(board.algebraic_to_coords("")).to be_nil
+      expect(board.algebraic_to_coords(nil)).to be_nil
+    end
+
+    it "returns nil for coordinates outside the 8x8 board limits" do
+      expect(board.algebraic_to_coords("z9")).to be_nil
+      expect(board.algebraic_to_coords("i4")).to be_nil
+      expect(board.algebraic_to_coords("e9")).to be_nil
+    end
+  end
 end

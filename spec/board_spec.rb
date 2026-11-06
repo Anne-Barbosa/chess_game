@@ -200,4 +200,34 @@ describe Board do
       expect(board.valid_destination?([4, 4], white_rook)).to be true
     end
   end
+
+  describe "move" do
+    let(:board) { Board.new }
+
+    it "successfully moves a piece when all validations pass" do 
+      board.grid = Array.new(8) { Array.new(8, nil) }
+      rook = Rook.new(:white)
+      board.place_piece([4, 4], rook)
+
+      result = board.move([4, 4], [4, 7])
+
+      expect(result). to be true
+      expect(board.piece_at([4, 4,])).to be_nil
+      expect(board.piece_at([4, 7])).to be(rook)
+    end
+
+    it "fails to move when the path is blocked" do
+      board.grid = Array.new(8) { Array.new(8, nil) }
+      rook = Rook.new(:white)
+      pawn = Pawn.new(:white)
+
+      board.place_piece([4, 4], rook)
+      board.place_piece([4, 6], pawn)
+
+      result = board.move([4, 4], [4, 7])
+
+      expect(result).to be false
+      expect(board.piece_at([4, 4])).to eq(rook)
+    end
+  end
 end

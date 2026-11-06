@@ -91,6 +91,24 @@ class Board
     true
   end
 
+  def move(start_pos, end_pos)
+    piece = piece_at(start_pos)
+
+    return false if piece.nil? || piece == ' '
+
+    return false unless piece.valid_move?(start_pos, end_pos)
+    return false unless path_clear?(start_pos, end_pos)
+    return false unless valid_destination?(end_pos, piece)
+
+    start_row, start_col = start_pos
+    end_row, end_col = end_pos
+
+    @grid[end_row][end_col] = piece
+    @grid[start_row][start_col] = nil 
+
+    true
+  end
+
   def display
     puts "\n    a   b   c   d   e   f   g   h"
     puts "  +---+---+---+---+---+---+---+---+"

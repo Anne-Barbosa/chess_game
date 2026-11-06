@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require_relative '../lib/board'
+require_relative '../lib/pieces/rook'
+require_relative '../lib/pieces/pawn'
 
 describe Board do
   describe "#initialize" do
@@ -92,6 +94,79 @@ describe Board do
       expect(board.algebraic_to_coords("z9")).to be_nil
       expect(board.algebraic_to_coords("i4")).to be_nil
       expect(board.algebraic_to_coords("e9")).to be_nil
+    end
+  end
+
+  describe "path_clear?" do
+    let(:board) { Board.new }
+
+    it "returns false when there is a piece blocking the path in a straight line" do
+      rook = Rook.new(:white)
+      blocking_pawn = Pawn.new(:white)
+
+      board.place_piece([0, 0], rook)
+      board.place_piece([0, 2], blocking_pawn)
+      
+      expect(board.path_clear?([0, 0], [0, 4])).to be false
+    end
+
+    it "returns true when the path is completely clear" do
+      board = Board.new
+      (0..7).each { |c| board.grid[0][c] = nil }
+
+      rook = Rook.new(:white)
+      board.place_piece([0, 0], rook)
+
+      expect(board.path_clear?([0, 0], [0, 3])).to be true
+    end
+
+    it "returns false when there is an obstacle in a vertical path" do
+      board = Board.new
+      (0..7).each { |r| board.grid[r][3] = nil }
+
+      rook = Rook.new(:white)
+      pawn = Pawn.new(:white)
+
+      board.place_piece([1, 3], rook)
+      board.place_piece([3, 3], pawn)
+
+      expect(board.path_clear?([1, 3], [5, 3])).to be false
+    end
+
+    it "returns true when a diagonal path is completely clear" do
+      board = Board.new
+      board.grid = Array.new(8) { Array.new(8, nil) }
+
+      bishop = Bishop.new(:white)
+      board.place_piece([2, 2], bishop)
+
+      expect(board.path_clear?([2, 2], [5, 5])).to be true
+    end
+
+    it "returns false when there is an obstacle in a diagonal path" do
+      board = Board.new
+      board.grid = Array.new(8) { Array.new(8, nil) }
+
+      bishop = Bishop.new(:white)
+      pawn = Pawn.new(:white)
+
+      board.place_piece([2, 2], bishop)
+      board.place_piece([4, 4], pawn) 
+
+      expect(board.path_clear?([2, 2], [5, 5])).to be false
+    end
+
+    it "returns true for a Knight even if there are pieces in between (because it jumps)" do
+      board = Board.new
+      board.grid = Array.new(8) { Array.new(8, nil) }
+
+      knight = Knight.new(:white)
+      blocking_pawn = Pawn.new(:white)
+
+      board.place_piece([4, 4], knight)
+      board.place_piece([3, 4], blocking_pawn) 
+
+      expect(board.path_clear?([4, 4], [2, 5])).to be true
     end
   end
 end

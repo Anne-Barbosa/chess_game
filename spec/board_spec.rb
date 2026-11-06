@@ -169,4 +169,35 @@ describe Board do
       expect(board.path_clear?([4, 4], [2, 5])).to be true
     end
   end
+
+  describe "valid_destination?" do
+    let(:board) { Board.new }
+
+    it "returns true when the destination square is empty" do
+      white_rook = Rook.new(:white)
+      expect(board.valid_destination?([4, 4], white_rook)).to be true
+    end
+
+    it "returns false when the destination square has a friendly piece" do
+      board.grid = Array.new(8) { Array.new(8, nil) }
+
+      white_rook = Rook.new(:white)
+      friendly_pawn = Pawn.new(:white)
+
+      board.place_piece([4, 4], friendly_pawn)
+
+      expect(board.valid_destination?([4, 4], white_rook)).to be false
+    end
+
+    it "returns true when the destination square has an enemy piece (capture)" do
+      board.grid = Array.new(8) { Array.new(8, nil) }
+
+      white_rook = Rook.new(:white)
+      enemy_pawn = Pawn.new(:black)
+
+      board.place_piece([4, 4], enemy_pawn)
+
+      expect(board.valid_destination?([4, 4], white_rook)).to be true
+    end
+  end
 end

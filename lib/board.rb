@@ -60,7 +60,7 @@ class Board
   def path_clear?(start_pos, end_pos)
     piece = piece_at(start_pos)
     return true if piece.is_a?(Knight)
-    
+
     start_row, start_col = start_pos
     end_row, end_col = end_pos
 
@@ -77,6 +77,16 @@ class Board
       current_row += row_step
       current_col += col_step
     end
+
+    true
+  end
+
+  def valid_destination?(end_pos, piece)
+    destination_piece = piece_at(end_pos)
+
+    return true if destination_piece.nil? || destination_piece == ' '
+
+    return false if destination_piece.color == piece.color
 
     true
   end

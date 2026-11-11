@@ -22,4 +22,26 @@ class Game
 
     piece.color == @current_player
   end
+
+  def play
+    loop do
+      @board.display
+
+      puts "#{@current_player.to_s.capitalize}'s turn. Enter move (e.g., e2 e4):"
+      
+      print "From: "
+      start_str = gets.chomp
+      print "To: "
+      end_str = gets.chomp
+
+      start_pos = @board.algebraic_to_coords(start_str)
+      end_pos = @board.algebraic_to_coords(end_str)
+
+      if start_pos && end_pos && valid_turn?(start_pos) && @board.move(start_pos, end_pos)
+        switch_turn
+      else
+        puts "It's not a legal move! Try again!"
+      end
+    end
+  end
 end

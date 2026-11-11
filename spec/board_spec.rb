@@ -230,4 +230,27 @@ describe Board do
       expect(board.piece_at([4, 4])).to eq(rook)
     end
   end
+
+  describe "in_check?" do
+    it "returns true when the white king is under attack by a black rook" do
+      board = Board.new
+      
+      board.grid.map! { |row| row.fill(" ") }
+
+      board.grid[4][4] = King.new(:white)
+      board.grid[4][0] = Rook.new(:black)
+
+      expect(board.in_check?(:white)).to be true
+    end
+
+    it "returns false when the white king is not under attack" do
+      board = Board.new
+
+      board.grid.map! { |row| row.fill(" ") }
+
+      board.grid[4][4] = King.new(:white)
+
+      expect(board.in_check?(:white)).to be false
+    end
+  end
 end

@@ -109,6 +109,37 @@ class Board
     true
   end
 
+  def in_check?(color)
+    king_pos = find_king(color)
+    return false unless king_pos
+
+    opponent_color = (color == :white) ? :black : :white
+
+    @grid.each_with_index do |row, r_idx|
+      row.each_with_index do |piece, c_idx|
+        next if piece == " " || piece.nil?
+        next unless piece.color == opponent_color
+
+        if piece.valid_move?([r_idx, c_idx], king_pos) && path_clear?([r_idx, c_idx], king_pos)
+          return true
+        end
+      end
+    end
+
+    false
+  end
+
+  def find_king(color)
+    @grid.each_with_index do |row, r_idx|
+      row.each_with_index do |piece, c_idx|
+        if piece.is_a?(King) && piece.color == color
+          return [r_idx, c_idx]
+        end
+      end
+    end
+    nil
+  end
+
   def display
     puts "\n    a   b   c   d   e   f   g   h"
     puts "  +---+---+---+---+---+---+---+---+"

@@ -231,7 +231,7 @@ describe Board do
     end
   end
 
-  describe "in_check?" do
+describe "in_check?" do
     it "returns true when the white king is under attack by a black rook" do
       board = Board.new
       
@@ -245,12 +245,28 @@ describe Board do
 
     it "returns false when the white king is not under attack" do
       board = Board.new
-
+      
       board.grid.map! { |row| row.fill(" ") }
 
       board.grid[4][4] = King.new(:white)
 
       expect(board.in_check?(:white)).to be false
+    end
+  end
+
+  describe "king safety validation" do
+    it "refuses a move that leaves the player's own king in check" do
+      board = Board.new
+
+      board.grid.map! { |row| row.fill(" ") }
+
+      board.grid[4][4] = King.new(:white)
+      board.grid[4][2] = Rook.new(:white)
+      board.grid[4][0] = Rook.new(:black)
+
+      result = board.move([4, 2], [3, 2])
+
+      expect(result).to be false
     end
   end
 end

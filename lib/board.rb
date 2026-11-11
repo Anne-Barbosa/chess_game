@@ -92,21 +92,39 @@ class Board
   end
 
   def move(start_pos, end_pos)
-    piece = piece_at(start_pos)
-
-    return false if piece.nil? || piece == ' '
-
-    return false unless piece.valid_move?(start_pos, end_pos)
-    return false unless path_clear?(start_pos, end_pos)
-    return false unless valid_destination?(end_pos, piece)
-
     start_row, start_col = start_pos
     end_row, end_col = end_pos
 
-    @grid[end_row][end_col] = piece
-    @grid[start_row][start_col] = nil 
+    piece = piece_at(start_pos)
+    return false if piece.nil? || piece == " "
 
+    return false unless piece.valid_move?(start_pos, end_pos)
+    return false unless path_clear?(start_pos, end_pos)
+    return false unless valid_destination?(end_pos, piece.color)
+
+    return false if results_in_check?(start_pos, end_pos, piece.color)
+
+    @grid[end_row][end_col] = piece
+    @grid[start_row][start_col] = nil
     true
+  end
+
+  def results_in_check?(start_pos, end_pos, color)
+    start_row, start_col = start_pos
+    end_row, end_col = end_pos
+
+    original_source = @grid[start_row][start_col]
+    original_dest = @grid[end_row][end_col]
+
+    @grid[end_row][end_col] = original_source
+    @grid[start_row][start_col] = " "
+
+    in_check = in_check?(color)
+
+    @grid[start_row][start_col] = original_source
+    @grid[end_row][end_col] = original_dest
+
+    in_check
   end
 
   def in_check?(color)

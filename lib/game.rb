@@ -5,7 +5,7 @@ require_relative 'board'
 require_relative 'pieces/piece'
 
 class Game
-  SAVE_FILE = 'bin/chess_save.json'
+  SAVE_FILE = 'bin/chess_save.dat'
 
   attr_reader :board, :current_player
 
@@ -69,14 +69,9 @@ class Game
   private
 
   def save_game
-    data = {
-      board: @board,
-      current_player: @current_player
-    }
-    
     Dir.mkdir('bin') unless Dir.exist?('bin')
     
-    File.write(SAVE_FILE, JSON.pretty_generate(data))
+    File.binwrite(SAVE_FILE, Marshal.dump(self))
     puts "\nGame successfully saved to #{SAVE_FILE}!"
   end
 
@@ -86,11 +81,11 @@ class Game
       return nil
     end
 
-    data = JSON.parse(File.read(SAVE_FILE), symbolize_names: true)
+    game = Marshal.load(File.binread(SAVE_FILE))
     puts "Game loaded successfully!"
     sleep(1)
 
-    new(data[:board], data[:current_player])
+    game
   rescue JSON::ParserError
     puts "Save file is corrupted."
     nil

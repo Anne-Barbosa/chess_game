@@ -269,4 +269,30 @@ describe "in_check?" do
       expect(result).to be false
     end
   end
+
+  describe "checkmate?" do
+    it "returns false when the king is in check but can escape" do
+      board = Board.new
+      board.grid.map! { |row| row.fill(" ") }
+
+      board.grid[7][4] = King.new(:white)
+      board.grid[7][0] = Rook.new(:black)
+
+      expect(board.checkmate?(:white)).to be false
+    end
+
+    it "returns true when the king is in checkmate (no legal moves available)" do
+      board = Board.new
+      board.grid.map! { |row| row.fill(" ") }
+
+      board.grid[7][6] = King.new(:white)
+      board.grid[6][5] = Pawn.new(:white)
+      board.grid[6][6] = Pawn.new(:white)
+      board.grid[6][7] = Pawn.new(:white)
+      board.grid[7][0] = Rook.new(:black)
+      board.grid[6][0] = Rook.new(:black)
+
+      expect(board.checkmate?(:white)).to be true
+    end
+  end
 end

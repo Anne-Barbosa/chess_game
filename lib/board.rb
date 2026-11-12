@@ -81,14 +81,15 @@ class Board
     true
   end
 
-  def valid_destination?(end_pos, piece)
+  def valid_destination?(end_pos, color_or_piece)
+    end_row, end_col = end_pos
     destination_piece = piece_at(end_pos)
 
-    return true if destination_piece.nil? || destination_piece == ' '
+    return true if destination_piece == " " || destination_piece.nil?
 
-    return false if destination_piece.color == piece.color
+    player_color = color_or_piece.respond_to?(:color) ? color_or_piece.color : color_or_piece
 
-    true
+    destination_piece.color != player_color
   end
 
   def move(start_pos, end_pos)
@@ -156,6 +157,36 @@ class Board
       end
     end
     nil
+  end
+
+  def checkmate?(color)
+    return false unless in_check?(color)
+
+    @grid.each_with_index do |row, r_idx|
+      row.each_with_index do |piece, c_idx|
+        next if piece == " " || piece.nil?
+        next unless piece.color == color
+
+        start_pos = [r_idx, c_idx]
+
+        (0..7).each do |dest_r|
+          (0..7).each do |dest_c|
+            end_pos = [dest_r, dest_c]
+            next if start_pos == end_pos
+
+            next unless piece.valid_move?(start_pos, end_pos)
+            next unless path_clear?(start_pos, end_pos)
+            next unless valid_destination?(end_pos, piece.color)
+
+            unless results_in_check?(start_pos, end_pos, color)
+              return false 
+            end
+          end
+        end
+      end
+    end
+
+    true
   end
 
   def display

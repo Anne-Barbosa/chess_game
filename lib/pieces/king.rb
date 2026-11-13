@@ -12,9 +12,9 @@ class King < Piece
     start_row, start_col = start_pos
     end_row, end_col = end_pos
 
-    row_diff = (end_row - start_row).abs 
+    row_diff = (end_row - start_row).abs
     col_diff = (end_col - start_col).abs
 
-    row_diff <= 1 && col_diff <= 1 && (row_diff > 0 || col_diff > 0)
+    row_diff <= 1 && col_diff <= 1 && (row_diff.positive? || col_diff.positive?)
   end
 end

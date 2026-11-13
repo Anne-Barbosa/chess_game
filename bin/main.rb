@@ -6,11 +6,11 @@ require_relative '../lib/game'
 
 def start_game
   system('clear') || system('cls')
-  puts "========================================"
-  puts "       CHESS GAME IN RUBY (TDD)         "
-  puts "========================================"
-  puts "1. Start New Game"
-  puts "2. Load Saved Game"
+  puts '========================================'
+  puts '       CHESS GAME IN RUBY (TDD)         '
+  puts '========================================'
+  puts '1. Start New Game'
+  puts '2. Load Saved Game'
   print "\nChoose an option (1 or 2): "
 
   choice = gets.chomp.strip

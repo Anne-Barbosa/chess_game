@@ -11,11 +11,11 @@ class Game
 
   def initialize(board = Board.new, current_player = :white)
     @board = board
-    @current_player = current_player 
+    @current_player = current_player
   end
 
   def switch_turn
-    @current_player = (@current_player == :white) ? :black : :white
+    @current_player = @current_player == :white ? :black : :white
   end
 
   def valid_turn?(coords)
@@ -30,13 +30,11 @@ class Game
     loop do
       @board.display
 
-      if @board.in_check?(@current_player)
-        puts "⚠️ ATTENTION: King #{@current_player.to_s.capitalize} is in CHECK!"
-      end
+      puts "⚠️ ATTENTION: King #{@current_player.to_s.capitalize} is in CHECK!" if @board.in_check?(@current_player)
 
       puts "#{@current_player.to_s.capitalize}'s turn. Enter move (e.g., e2 e4) or type 'save':"
-      
-      print "From: "
+
+      print 'From: '
       start_str = gets.chomp.downcase.strip
 
       if start_str == 'save'
@@ -44,14 +42,14 @@ class Game
         next
       end
 
-      print "To: "
+      print 'To: '
       end_str = gets.chomp.downcase.strip
 
       start_pos = @board.algebraic_to_coords(start_str)
       end_pos = @board.algebraic_to_coords(end_str)
 
       if start_pos && end_pos && valid_turn?(start_pos) && @board.move(start_pos, end_pos)
-        opponent_color = (@current_player == :white) ? :black : :white
+        opponent_color = @current_player == :white ? :black : :white
 
         if @board.checkmate?(opponent_color)
           @board.display
@@ -70,24 +68,24 @@ class Game
 
   def save_game
     Dir.mkdir('bin') unless Dir.exist?('bin')
-    
+
     File.binwrite(SAVE_FILE, Marshal.dump(self))
     puts "\nGame successfully saved to #{SAVE_FILE}!"
   end
 
   def self.load_game
     unless File.exist?(SAVE_FILE)
-      puts "No saved game found."
+      puts 'No saved game found.'
       return nil
     end
 
     game = Marshal.load(File.binread(SAVE_FILE))
-    puts "Game loaded successfully!"
+    puts 'Game loaded successfully!'
     sleep(1)
 
     game
   rescue JSON::ParserError
-    puts "Save file is corrupted."
+    puts 'Save file is corrupted.'
     nil
   end
 end

@@ -24,9 +24,7 @@ class Board
     back_row_pieces.each_with_index do |piece_class, col|
       @grid[0][col] = piece_class.new(:black)
       @grid[1][col] = Pawn.new(:black)
-    end
 
-    back_row_pieces.each_with_index do |piece_class, col|
       @grid[6][col] = Pawn.new(:white)
       @grid[7][col] = piece_class.new(:white)
     end
@@ -82,10 +80,9 @@ class Board
   end
 
   def valid_destination?(end_pos, color_or_piece)
-    end_row, end_col = end_pos
     destination_piece = piece_at(end_pos)
 
-    return true if destination_piece == " " || destination_piece.nil?
+    return true if destination_piece == ' ' || destination_piece.nil?
 
     player_color = color_or_piece.respond_to?(:color) ? color_or_piece.color : color_or_piece
 
@@ -97,7 +94,7 @@ class Board
     end_row, end_col = end_pos
 
     piece = piece_at(start_pos)
-    return false if piece.nil? || piece == " "
+    return false if piece.nil? || piece == ' '
 
     return false unless piece.valid_move?(start_pos, end_pos)
     return false unless path_clear?(start_pos, end_pos)
@@ -118,7 +115,7 @@ class Board
     original_dest = @grid[end_row][end_col]
 
     @grid[end_row][end_col] = original_source
-    @grid[start_row][start_col] = " "
+    @grid[start_row][start_col] = ' '
 
     in_check = in_check?(color)
 
@@ -132,16 +129,14 @@ class Board
     king_pos = find_king(color)
     return false unless king_pos
 
-    opponent_color = (color == :white) ? :black : :white
+    opponent_color = color == :white ? :black : :white
 
     @grid.each_with_index do |row, r_idx|
       row.each_with_index do |piece, c_idx|
-        next if piece == " " || piece.nil?
+        next if piece == ' ' || piece.nil?
         next unless piece.color == opponent_color
 
-        if piece.valid_move?([r_idx, c_idx], king_pos) && path_clear?([r_idx, c_idx], king_pos)
-          return true
-        end
+        return true if piece.valid_move?([r_idx, c_idx], king_pos) && path_clear?([r_idx, c_idx], king_pos)
       end
     end
 
@@ -151,9 +146,7 @@ class Board
   def find_king(color)
     @grid.each_with_index do |row, r_idx|
       row.each_with_index do |piece, c_idx|
-        if piece.is_a?(King) && piece.color == color
-          return [r_idx, c_idx]
-        end
+        return [r_idx, c_idx] if piece.is_a?(King) && piece.color == color
       end
     end
     nil
@@ -164,7 +157,7 @@ class Board
 
     @grid.each_with_index do |row, r_idx|
       row.each_with_index do |piece, c_idx|
-        next if piece == " " || piece.nil?
+        next if piece == ' ' || piece.nil?
         next unless piece.color == color
 
         start_pos = [r_idx, c_idx]
@@ -178,9 +171,7 @@ class Board
             next unless path_clear?(start_pos, end_pos)
             next unless valid_destination?(end_pos, piece.color)
 
-            unless results_in_check?(start_pos, end_pos, color)
-              return false 
-            end
+            return false unless results_in_check?(start_pos, end_pos, color)
           end
         end
       end
@@ -191,7 +182,7 @@ class Board
 
   def display
     puts "\n    a   b   c   d   e   f   g   h"
-    puts "  +---+---+---+---+---+---+---+---+"
+    puts '  +---+---+---+---+---+---+---+---+'
 
     @grid.each_with_index do |row, index|
       row_number = 8 - index
@@ -203,7 +194,7 @@ class Board
       end
 
       puts " #{row_number}"
-      puts "  +---+---+---+---+---+---+---+---+"
+      puts '  +---+---+---+---+---+---+---+---+'
     end
 
     puts "    a   b   c   d   e   f   g   h\n\n"

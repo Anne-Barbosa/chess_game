@@ -18,9 +18,9 @@ class Pawn < Piece
     direction = color == :white ? -1 : 1
     start_row_line = color == :white ? 6 : 1
 
-    return true if row_diff == direction && col_diff == 0
+    return true if row_diff == direction && col_diff.zero?
 
-    return true if row_diff == (2 * direction) && col_diff == 0 && start_row == start_row_line
+    return true if row_diff == (2 * direction) && col_diff.zero? && start_row == start_row_line
 
     return true if row_diff == direction && col_diff == 1
 
